@@ -1,0 +1,280 @@
+ <!DOCTYPE html>
+ <html lang="ru">
+ <head>
+ <meta charset="utf-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+ <title>Сосед по интересам — кликабельный прототип</title>
+ <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,800&display=swap">
+ <style>
+ :root{--bg:#E9ECF2;--panel:#fff;--txt:#1E2433;--mut:#667089;--line:#D6DBE6;color-scheme:light}
+ @media (prefers-color-scheme:dark){:root{--bg:#10172A;--panel:#18213A;--txt:#E8EDF7;--mut:#9AA8C4;--line:#2B3858;color-scheme:dark}}
+ *{box-sizing:border-box}
+ body{margin:0;background:var(--bg);color:var(--txt);font:15px/1.4 Inter,-apple-system,"SF Pro Text",Arial,sans-serif}
+ .wrap{max-width:960px;margin:0 auto;padding:20px 16px;padding-top:max(20px,env(safe-area-inset-top));display:flex;gap:28px;flex-wrap:wrap;justify-content:center;align-items:flex-start}
+ .phone{--navy:#2B4A8B;--page:#F7F7F8;--card:#fff;--ink:#222;--gray:#777;--chip:#E9E9EC;--green:#2BA84A;--red:#E5382F;
+  width:392px;height:826px;background:var(--page);color:var(--ink);border-radius:58px;border:10px solid #0B0B0D;overflow:hidden;position:relative;flex:none;font-family:Inter,-apple-system,sans-serif;box-shadow:0 0 0 2px #3a3a40,0 20px 50px rgba(0,0,0,.3)}
+ .isl{position:absolute;top:11px;left:50%;transform:translateX(-50%);width:118px;height:34px;border-radius:20px;background:#000;z-index:12}
+ .status{position:absolute;top:0;left:0;right:0;height:56px;padding:0 34px 0 42px;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-size:16px;z-index:11;pointer-events:none}
+ .status span:last-child{display:flex;gap:6px;align-items:center}
+ .hi{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:134px;height:5px;border-radius:3px;background:#111;z-index:13}
+ .head{position:absolute;top:56px;left:0;right:0;height:62px;display:flex;align-items:center;justify-content:center}
+ .circ{position:absolute;left:14px;top:10px;width:56px;height:42px;border-radius:21px;background:#fff;border:0;box-shadow:0 1px 6px rgba(0,0,0,.1);cursor:pointer;color:#111;display:grid;place-items:center}
+ .body{position:absolute;top:118px;bottom:0;left:0;right:0;overflow:auto;padding:6px 14px 180px}
+ .pill{background:var(--navy);color:#fff;border-radius:22px;text-align:center;font-weight:600;font-size:13px;letter-spacing:.4px;padding:11px;margin:4px 0 10px;text-transform:uppercase}
+ .card{background:var(--card);border-radius:18px;padding:14px 16px;margin-bottom:10px}
+ .card h3{margin:0 0 3px;font-size:17px;font-weight:600}
+ .card p,p.g{margin:0;color:var(--gray);font-size:14px}
+ p.g{margin-bottom:10px}
+ .tap{cursor:pointer;display:flex;gap:12px;align-items:center}
+ .tap:hover{box-shadow:0 0 0 2px var(--navy) inset}
+ .ic{width:36px;height:36px;border-radius:50%;background:var(--navy);color:#fff;display:grid;place-items:center;font-size:15px;font-weight:600;flex:none;overflow:hidden}
+ .ic img{width:100%;height:100%;object-fit:cover;display:block}
+ .ic.big{width:60px;height:60px;font-size:24px}.ic.red{background:var(--red)}.ic.tint{background:#E3E8F3;color:var(--navy)}
+ h2{font-size:24px;margin:6px 2px 8px;font-weight:700;line-height:1.2}
+ .chips{display:flex;flex-wrap:wrap;gap:8px}
+ .chip{border:0;background:var(--chip);color:var(--ink);border-radius:20px;padding:9px 15px;font-weight:500;font-size:15px;font-family:inherit;cursor:pointer}
+ .chip.on{background:var(--navy);color:#fff}
+ .chip.s{padding:3px 10px;font-size:12px;cursor:default}
+ .btn{width:100%;height:48px;border:0;border-radius:12px;margin-top:10px;background:var(--navy);color:#fff;font-weight:600;font-size:16px;font-family:inherit;cursor:pointer}
+ .btn.sec{background:#E3E8F3;color:var(--navy)}
+ .seg{display:flex;background:var(--chip);border-radius:22px;padding:3px;margin-bottom:12px}
+ .seg button{flex:1;border:0;background:none;cursor:pointer;font-family:inherit;padding:8px 4px;border-radius:19px;font-size:14px;color:var(--gray)}
+ .seg .on{background:var(--navy);color:#fff}
+ .opt{display:block;width:100%;text-align:left;border:2px solid transparent;background:#fff;border-radius:18px;padding:14px 16px;margin-bottom:10px;font-weight:600;font-size:17px;font-family:inherit;cursor:pointer;color:var(--ink)}
+ .opt.on{border-color:var(--navy)}.opt span{display:block;font-weight:400;font-size:14px;color:var(--gray);margin-top:2px}
+ .opt span b{color:var(--navy);font-weight:600}
+ .row{display:flex;justify-content:space-between;gap:10px;margin-top:6px}.row h3{margin:0}
+ .bar{height:5px;border-radius:3px;background:#E4E4E8;margin-top:7px}.bar i{display:block;height:100%;border-radius:3px;background:var(--green)}
+ .msg{max-width:82%;padding:10px 13px;border-radius:18px;margin-bottom:8px;background:#fff;font-size:15px}
+ .msg.me{margin-left:auto;background:var(--navy);color:#fff}
+ .seats{display:grid;grid-template-columns:26px repeat(3,1fr) 22px repeat(3,1fr);gap:6px;align-items:center;text-align:center;font-weight:600;font-size:13px}
+ .seat{border:0;border-radius:10px;padding:11px 0;background:var(--chip);font-weight:500;font-size:13px;font-family:inherit;cursor:pointer;color:var(--ink)}
+ .seat.x{background:#D3D3D8;color:#9A9AA2;cursor:not-allowed}.seat.on{background:var(--navy);color:#fff}
+ .errbox{text-align:center;padding:30px 10px 0}
+ .errbox .ic{margin:0 auto 14px;background:#FDECEA;color:var(--red);width:68px;height:68px}
+ .fld{background:#fff;border-radius:16px;padding:10px 14px;margin-bottom:10px;position:relative}
+ .fld label{display:block;font-size:12px;color:var(--gray)}
+ .fld input{border:0;outline:0;width:100%;font:inherit;font-size:17px;padding:3px 60px 3px 0;background:none;color:var(--ink)}
+ .eye,.lnk{border:0;background:none;color:var(--navy);font:inherit;font-weight:600;font-size:14px;cursor:pointer}
+ .eye{position:absolute;right:12px;top:22px}.lnk{padding:6px 2px}
+ .cta{position:absolute;left:14px;right:14px;bottom:98px;height:52px;border:0;border-radius:12px;background:var(--navy);color:#fff;font-weight:600;font-size:17px;font-family:inherit;cursor:pointer;z-index:4}
+ .cta:disabled{background:#D3D3D8;color:#8E8E96;cursor:not-allowed}
+ .tabs{position:absolute;left:10px;right:10px;bottom:22px;height:66px;background:rgba(255,255,255,.97);border-radius:33px;box-shadow:0 2px 16px rgba(0,0,0,.14);display:flex;padding:5px;z-index:5}
+ .tab{flex:1;border:0;background:none;border-radius:28px;font-weight:600;font-size:10px;font-family:inherit;color:#111;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;padding:0}
+ .tab.on{background:var(--chip);color:var(--navy)}
+ .toast{position:absolute;left:20px;right:20px;bottom:164px;background:#222;color:#fff;padding:11px 15px;border-radius:14px;font-size:14px;z-index:6}
+ .lock{position:absolute;inset:0;background:radial-gradient(120% 70% at 50% 0,#4F78C0,#26407A 55%,#16264F);color:#fff;text-align:center;padding:84px 16px 0;z-index:3}
+ .lock .d{font-size:20px;font-weight:600;opacity:.9}.lock .t{font-size:96px;font-weight:600;line-height:1.05;letter-spacing:-2px}
+ .push{background:rgba(255,255,255,.22);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);color:#fff;border:0;border-radius:24px;padding:12px 14px;text-align:left;margin-top:190px;width:100%;font:inherit;font-size:14px;cursor:pointer;line-height:1.35}
+ .push small{display:flex;gap:7px;align-items:center;opacity:.85;font-size:12px;margin-bottom:3px}
+ .push b{font-size:15px}
+ .ai{width:20px;height:20px;border-radius:5px;background:#fff;color:#2B4A8B;display:grid;place-items:center}
+ .lk{position:absolute;bottom:44px;width:50px;height:50px;border-radius:50%;background:rgba(0,0,0,.28);display:grid;place-items:center;color:#fff}
+ .side{width:300px;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px}
+ .side h3{margin:0 0 4px;font-size:16px}.side p{color:var(--mut);font-size:13px;margin:0 0 8px}
+ .sec2{font-size:13px;color:var(--mut);margin:14px 0 6px}
+ .sb{display:block;width:100%;text-align:left;border:1px solid var(--line);background:none;color:var(--txt);border-radius:10px;padding:8px 10px;margin-bottom:6px;font-weight:500;font-size:13px;font-family:inherit;cursor:pointer}
+ .sb:hover{border-color:#2B4A8B}.sb.cur{background:#2B4A8B;color:#fff;border-color:#2B4A8B}
+ .sb.e{color:#E5382F}.sb.e.cur{background:#E5382F;color:#fff;border-color:#E5382F}
+ button:focus-visible{outline:3px solid #6AA2FF;outline-offset:2px}
+ .opt.food{display:flex;gap:12px;align-items:center;padding:10px 14px 10px 10px}.opt.food>div{flex:1}
+ .th{width:58px;height:58px;border-radius:14px;background:#EEF1F8;display:grid;place-items:center;font-size:32px;font-style:normal;flex:none}
+ .seat.q{background:#DCE3F2;color:var(--navy);display:grid;place-items:center;cursor:not-allowed}
+ </style>
+ </head>
+ <body>
+ <div class="wrap">
+   <div class="phone" id="phone"></div>
+   <aside class="side">
+     <h3>Сосед по интересам</h3>
+     <p>Кликабельный прототип. Проходите путь как пользователь или переходите по схеме.</p>
+     <div class="sec2">Ошибки на этом экране</div><div id="errs"></div>
+     <div class="sec2" id="hm"></div><div id="main"></div>
+     <div class="sec2" id="he"></div><div id="all-err"></div>
+     <button class="sb" id="reset" style="margin-top:10px">Начать сначала</button>
+   </aside>
+ </div>
+ <script>
+ var S0=function(){return{mood:'talk',interests:['Путешествия','Кино'],seats:['14A'],cur:'s1',toast:'',filter:'all',person:0,aisle:null,paySeat:null,suggestedSeats:['14A','14B'],returnToPay:false,newMates:false,method:'card',snack:{},ordered:[],orderedQty:{},paid:null,matched:false,login:'',pass:'',showp:false}};
+ var S=S0();
+ var INTERESTS=['Путешествия','Кино','Музыка','Спорт','Книги','Кулинария','Технологии','Фотография','Бизнес','Игры'];
+ var MOODS=[['talk','Пообщаться','Рад разговору в пути'],['meet','Познакомиться','Хочу найти единомышленников'],['silence','Тишина и сон','Не беспокоить']];
+ /* ---------- Иконки: залитые силуэты в стиле полумесяца ---------- */
+ var ICO={
+  moon:'<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>',
+  users:'<circle cx="9" cy="8" r="3.6"/><path d="M2.5 20c0-4.2 3-6.2 6.500-6.200s6.500 2 6.500 6.200z"/><circle cx="17.500" cy="9" r="2.800"/><path d="M17 14c3 0 5 1.800 5 5.500h-5.200c0-2.200-.4-3.800-1.500-5z"/>',
+  user:'<circle cx="12" cy="8" r="4.500"/><path d="M3.500 21c0-5 4-7 8.500-7s8.500 2 8.500 7z"/>',
+  hour:'<path d="M6 2h12v5l-4 5 4 5v5H6v-5l4-5-4-5z"/>',
+  flag:'<path d="M5 2h2v20H5z"/><path d="M8 3h12l-3 5 3 5H8z"/>',
+  x:'<path d="M5 7l2-2 5 5 5-5 2 2-5 5 5 5-2 2-5-5-5 5-2-2 5-5z"/>',
+  bang:'<path d="M10.500 3h3l-.7 11h-1.600z"/><circle cx="12" cy="18.300" r="1.900"/>',
+  check:'<path d="M9.500 17.500 4 12l2-2 3.500 3.500L18 5l2 2z"/>',
+  chev:'<path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.400" stroke-linecap="round" stroke-linejoin="round"/>',
+  plane:'<path d="M21 16v-2l-8-5V3.500a1.500 1.500 0 0 0-3 0V9l-8 5v2l8-2.500V19l-2 1.500V22l3.500-1 3.500 1v-1.500L13 19v-5.500z"/>',
+  board:'<rect x="2" y="2" width="20" height="8.500" rx="1.600"/><rect x="2" y="13.500" width="20" height="8.500" rx="1.600"/><g fill="#fff"><path transform="translate(7.500 6.250) rotate(65) scale(.34) translate(-11 -12)" d="M21 16v-2l-8-5V3.500a1.500 1.500 0 0 0-3 0V9l-8 5v2l8-2.500V19l-2 1.500V22l3.500-1 3.500 1v-1.500L13 19v-5.500z"/><path transform="translate(7.500 17.750) rotate(245) scale(.34) translate(-11 -12)" d="M21 16v-2l-8-5V3.500a1.500 1.500 0 0 0-3 0V9l-8 5v2l8-2.500V19l-2 1.500V22l3.500-1 3.500 1v-1.500L13 19v-5.500z"/></g><path d="M13.500 4.800H17M13.500 7.900H19.500M13.500 16.300H17M13.500 19.400H19.500" stroke="#fff" fill="none" stroke-width="1.400" stroke-linecap="round"/>',
+  trip:'<path d="M9 3h6a1 1 0 0 1 1 1v2h3a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h3V4a1 1 0 0 1 1-1zm1 2v1h4V5z"/>',
+  bag:'<rect x="2.500" y="9" width="11" height="12.500" rx="1.200"/><path d="M5 9V7a3 3 0 0 1 6 0v2" fill="none" stroke="currentColor" stroke-width="1.700" stroke-linecap="round"/><g fill="none" stroke="#fff" stroke-width="1.200" stroke-linecap="round"><circle cx="5.600" cy="12.300" r="1.050"/><circle cx="10.400" cy="17.700" r="1.050"/><path d="M10.600 11.800 5.400 18.200"/></g><path d="M15.500 9h1.300v.9h1.400V9h1.400v.9h1.400V9H22v3h-6.500zM15.500 13H22v8.500h-6.500z"/><path fill="#fff" transform="translate(18.750 17.200) scale(.29) translate(-11 -12)" d="M21 16v-2l-8-5V3.500a1.500 1.500 0 0 0-3 0V9l-8 5v2l8-2.500V19l-2 1.500V22l3.500-1 3.500 1v-1.500L13 19v-5.500z"/>',
+  more:'<circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/>',
+  flash:'<path d="M8 2h8v4l-2 2v14h-4V8L8 6z"/>',
+  cam:'<path d="M9 4h6l1.500 2H20a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h3.500z"/><circle cx="12" cy="13" r="3.800" fill="#3a5aa0"/>'};
+ function ico(n,s){return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">'+ICO[n]+'</svg>'}
+ var LOGO='<svg width="184" height="28" aria-label="Аэрофлот" viewBox="0 0 230 35" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M229.5 0C225.783 3.53233 221.761 3.97537 218.129 4.41841L216.35 4.63394C214.4 4.82552 212.742 4.94526 210.878 6.09477C209.013 7.14848 206.856 9.54328 205.381 11.3035C199.592 12.2734 194.79 14.0455 190.671 16.1649C183.407 20.0564 178.41 25.1693 174.693 28.9771L171.061 33.0363L171.743 32.8567C178.41 26.9415 184.686 22.7027 190.671 20.1403C194.4 18.4639 198.02 17.482 201.554 17.1348H201.652L205.479 12.3572C206.454 11.4711 207.928 11.1238 210.086 10.9442L213.912 10.6808L217.142 10.5012L218.227 10.4054C220.774 10.0462 222.931 9.51933 225.978 5.62778L230 0.323299L229.5 0ZM202.541 14.9316C202.541 14.9316 201.457 16.3445 201.262 16.5241C197.837 16.9672 194.302 17.9371 190.671 19.4458C186.064 21.4694 181.359 24.3072 176.448 28.1868C179.884 24.6545 184.394 20.3199 190.671 16.9672C194.595 14.8478 199.299 13.0756 204.894 12.1057C204.491 12.453 202.541 14.9316 202.541 14.9316ZM225.393 5.30448C222.554 9.01642 220.579 9.54328 218.129 9.81868L217.142 9.9025L213.815 10.0821L209.988 10.3455C208.416 10.5251 207.246 10.7886 206.259 11.3154C207.55 9.81868 209.501 7.60349 211.17 6.53781C212.937 5.48409 214.997 5.3883 216.265 5.20869L217.057 5.12487H217.154L218.239 5.04106C221.286 4.68184 224.711 4.15498 228.05 1.85597C226.856 3.44851 225.393 5.30448 225.393 5.30448Z" fill="black"/><path fill-rule="evenodd" clip-rule="evenodd" d="M171.45 32.689C183.114 24.5587 189.293 21.3856 203.113 21.2059L200.176 25.0975C199.591 26.1512 198.701 26.1512 197.824 26.0674C187.915 25.9836 181.054 26.69 169.098 35L171.45 32.689Z" fill="url(#paint0_linear_2269_1002)"/><path fill-rule="evenodd" clip-rule="evenodd" d="M172.084 32.0185C172.084 32.0424 172.084 32.0544 172.072 32.0664C183.467 22.1998 193.144 17.7455 201.529 16.7875C202.309 15.9015 204.892 12.6206 205.672 11.5549C186.733 14.5604 178.031 26.4386 172.084 32.0185Z" fill="url(#paint1_linear_2269_1002)"/><path fill-rule="evenodd" clip-rule="evenodd" d="M172.036 32.0664C171.889 32.2101 171.499 32.6291 171.146 32.9524C171.036 33.0482 170.829 33.2877 170.817 33.2997C173.023 31.6473 177.495 28.4263 181.603 26.3069C185.685 24.1995 190.658 22.4632 197.726 21.5412C198.409 20.8348 200.529 18.1646 201.517 16.7516C188.476 18.5358 179.884 25.4447 172.036 32.0664Z" fill="url(#paint2_linear_2269_1002)"/><path fill-rule="evenodd" clip-rule="evenodd" d="M199.885 25.5286C199.982 25.0855 200.287 24.7263 198.909 23.948C197.142 22.9781 196.557 23.4092 196.947 22.4393C197.24 21.649 200.872 20.2361 203.614 21.1102C203.614 21.1102 201.164 23.6726 199.885 25.5286Z" fill="url(#paint3_linear_2269_1002)"/><path fill-rule="evenodd" clip-rule="evenodd" d="M210.183 10.4293C207.428 10.6928 205.771 11.3992 204.686 12.6445L201.006 17.4461C201.883 16.7396 204.284 16.3565 206.941 16.3565H207.331C207.428 16.3565 207.526 16.3565 207.623 16.3565C208.013 16.3565 208.415 16.2727 208.793 16.2727C212.62 16.1888 217.812 15.65 220.956 12.2135L225.514 6.23845L226.014 5.5679C222.016 10.4892 213.034 9.98631 210.183 10.4293Z" fill="url(#paint4_linear_2269_1002)"/><path fill-rule="evenodd" clip-rule="evenodd" d="M217.044 4.84947C215.874 5.02908 213.23 4.94526 211.06 6.2624C208.806 7.59151 206.076 10.8245 204.796 12.5009C205.978 11.2675 207.733 10.8604 210.085 10.585C212.45 10.3216 215.777 10.4054 218.226 10.0582C220.578 9.79473 222.736 9.35169 225.673 5.47211L229.792 0.167633C225.575 4.15497 220.968 4.32261 217.044 4.84947Z" fill="url(#paint5_linear_2269_1002)"/><path fill-rule="evenodd" clip-rule="evenodd" d="M212.34 15.7219C209.5 16.0811 206.258 16.1649 205.283 16.2487C203.711 16.2487 201.554 16.7756 200.969 17.482C199.104 19.6014 197.435 21.5412 196.947 22.4273C198.032 21.4574 201.664 21.5412 206.075 21.3736C210.487 21.194 214.899 19.338 218.421 15.5422L221.102 11.986C219.335 14.2012 216.166 15.195 212.34 15.7219Z" fill="url(#paint6_linear_2269_1002)"/><path fill-rule="evenodd" clip-rule="evenodd" d="M119.062 26.0435L124.84 15.3746H124.949L131.336 26.0435H137.906L129.423 12.2614H123.877L116.222 26.0435H119.062Z" fill="#10349E"/><path fill-rule="evenodd" clip-rule="evenodd" d="M28.2295 20.0205L37.2979 19.9247C37.2004 21.8525 36.0303 22.9182 35.4209 23.3732C33.9217 24.4509 31.7764 24.5467 30.7526 24.5467C29.2534 24.5467 27.9614 24.3551 26.6328 23.6367C25.7918 23.1817 24.8289 22.4153 24.3414 21.7687L23.9391 21.2179L20.9895 22.7506C21.8549 23.6606 23.1956 24.5587 24.6217 25.2172C26.8035 26.1991 28.8268 26.4386 31.2645 26.4386C33.8607 26.4386 37.9073 26.1033 40.8326 24.1156C42.8681 22.7266 43.8067 20.8348 43.8067 19.1584C43.8067 17.482 42.8681 15.5662 40.8326 14.2012C38.3096 12.4769 34.6286 11.8782 31.3377 11.8782C29.2046 11.8782 27.2423 12.0698 25.2555 12.7403C23.5979 13.2672 22.3059 13.9976 20.9773 15.0393L23.927 16.5481L24.6339 15.8536C25.2189 15.2549 26.2062 14.7041 27.1082 14.3688C28.3027 13.8898 29.5459 13.7342 30.8501 13.7342C33.4707 13.7342 34.9821 14.5005 35.8231 15.2549C36.3838 15.7338 37.1151 16.6319 37.2979 18.0328L28.2295 17.9011V20.0205Z" fill="#10349E"/><path fill-rule="evenodd" clip-rule="evenodd" d="M148.34 13.5546C149.815 13.5546 151.497 13.8539 152.789 15.3507C153.837 16.5481 154.008 17.937 154.008 19.1584C154.008 20.3797 153.837 21.7448 152.789 22.9661C151.497 24.4748 149.815 24.7622 148.34 24.7622C146.865 24.7622 145.183 24.4748 143.891 22.9661C142.855 21.7448 142.672 20.3797 142.672 19.1584C142.672 17.937 142.855 16.5481 143.891 15.3507C145.183 13.8539 146.865 13.5546 148.34 13.5546ZM148.34 26.4506C151.095 26.4506 154.922 25.8758 157.494 24.1276C159.529 22.7626 160.492 20.8228 160.492 19.1704C160.492 17.5179 159.529 15.5782 157.494 14.2131C154.922 12.4649 151.082 11.8902 148.34 11.8902C145.61 11.8902 141.746 12.4649 139.15 14.2131C137.114 15.5782 136.176 17.5179 136.176 19.1704C136.176 20.8228 137.114 22.7626 139.15 24.1276C141.746 25.8758 145.61 26.4506 148.34 26.4506Z" fill="#10349E"/><path fill-rule="evenodd" clip-rule="evenodd" d="M98.8283 15.7338C99.389 15.5662 100.047 15.4704 100.718 15.4704H101.412V22.6309H100.718C100.059 22.6309 99.4012 22.5351 98.8283 22.3674C98.3286 22.2237 97.8654 22.0322 97.4998 21.7448C96.8172 21.2419 96.2565 20.4037 96.2565 19.0387C96.2565 17.6976 96.8172 16.8594 97.4998 16.3565C97.8654 16.0811 98.3286 15.8775 98.8283 15.7338ZM109.469 24.391C112.748 24.1994 114.479 23.481 115.405 22.9542C117.136 21.9723 117.928 20.5713 117.928 19.0387C117.928 17.027 116.526 15.8176 115.405 15.1591C113.845 14.2251 111.663 13.8419 109.469 13.7222C108.884 13.6743 108.299 13.6743 107.714 13.6743H107.08V11.7824H101.205V13.6743H100.596C100.011 13.6743 99.4256 13.6743 98.8405 13.7222C96.6222 13.8419 94.4404 14.2251 92.9046 15.1591C91.7833 15.8296 90.3816 17.027 90.3816 19.0387C90.3816 20.5713 91.1739 21.9603 92.9046 22.9542C93.7944 23.481 95.5252 24.1994 98.8405 24.391C99.3768 24.415 99.9619 24.4389 100.596 24.4389H101.205V26.4506H107.08V24.4389H107.714C108.348 24.4389 108.945 24.415 109.469 24.391ZM109.469 15.7338C109.981 15.8775 110.432 16.0691 110.798 16.3565C111.48 16.8594 112.041 17.6976 112.041 19.0387C112.041 20.4037 111.48 21.2419 110.798 21.7448C110.432 22.0322 109.981 22.2237 109.469 22.3674C108.884 22.5351 108.25 22.6309 107.555 22.6309H106.897V15.4704H107.555C108.25 15.4704 108.884 15.5782 109.469 15.7338Z" fill="#10349E"/><path fill-rule="evenodd" clip-rule="evenodd" d="M76.9367 13.5546C78.3872 13.5546 80.0936 13.8539 81.3978 15.3507C82.446 16.5481 82.6167 17.937 82.6167 19.1584C82.6167 20.3797 82.4338 21.7448 81.3978 22.9661C80.0936 24.4748 78.3872 24.7622 76.9367 24.7622C75.4619 24.7622 73.7555 24.4748 72.4635 22.9661C71.4153 21.7448 71.2568 20.3797 71.2568 19.1584C71.2568 17.937 71.4153 16.5481 72.4635 15.3507C73.7677 13.8539 75.4741 13.5546 76.9367 13.5546ZM76.9367 26.4506C79.667 26.4506 83.5308 25.8758 86.1026 24.1276C88.1137 22.7626 89.0645 20.8228 89.0645 19.1704C89.0645 17.5179 88.1137 15.5782 86.1026 14.2131C83.5308 12.4649 79.667 11.8902 76.9367 11.8902C74.1943 11.8902 70.3183 12.4649 67.7465 14.2131C65.711 15.5782 64.7725 17.5179 64.7725 19.1704C64.7725 20.8228 65.711 22.7626 67.7465 24.1276C70.3305 25.8758 74.1943 26.4506 76.9367 26.4506Z" fill="#10349E"/><path fill-rule="evenodd" clip-rule="evenodd" d="M54.7527 20.9904H55.8497C58.6775 20.9904 60.6398 20.703 62.0415 19.9367C63.7967 18.9548 64.1989 17.6137 64.1989 16.56C64.1989 15.5303 63.7967 14.1892 62.0415 13.2552C60.6398 12.5128 58.7628 12.2733 55.6059 12.2733H54.7527H45.5381V26.0554H51.413V21.0024H54.7527V20.9904ZM54.7527 14.3688C55.4597 14.3927 56.386 14.5125 57.0442 14.8957C57.934 15.4225 58.0802 16.1409 58.0802 16.572C58.0802 17.0031 57.9583 17.7694 56.9832 18.3202C56.3251 18.7273 55.5084 18.8471 54.7405 18.895H54.1311H51.413V14.3448H54.1311C54.3261 14.3448 54.5211 14.3448 54.7527 14.3688Z" fill="#10349E"/><path fill-rule="evenodd" clip-rule="evenodd" d="M9.23901 15.4944L12.1643 20.1882H6.31373L9.08055 15.3986H9.16587L9.23901 15.4944ZM13.371 22.0681L15.894 26.0435H22.4637L13.5416 12.2614H8.09327L0 26.0435H2.92528L5.24112 22.0681H13.371Z" fill="#10349E"/><path fill-rule="evenodd" clip-rule="evenodd" d="M159.566 14.3449H165.88V26.0435H171.767V14.3449H178.093V12.2614H159.566V14.3449Z" fill="#10349E"/><defs><linearGradient id="paint0_linear_2269_1002" x1="176.876" y1="19.1365" x2="191.304" y2="33.6344" gradientUnits="userSpaceOnUse"><stop stop-color="#C00D0D"/><stop offset="0.3" stop-color="#E30613"/><stop offset="0.3338" stop-color="#E51925"/><stop offset="0.4021" stop-color="#EA4A53"/><stop offset="0.498" stop-color="#F3979D"/><stop offset="0.5292" stop-color="#F6B2B6"/><stop offset="0.5335" stop-color="#F5ACB0"/><stop offset="0.5726" stop-color="#F07A81"/><stop offset="0.6113" stop-color="#EB5059"/><stop offset="0.6487" stop-color="#E8303B"/><stop offset="0.6846" stop-color="#E51925"/><stop offset="0.7182" stop-color="#E40B18"/><stop offset="0.7475" stop-color="#E30613"/><stop offset="1" stop-color="#C00D0D"/></linearGradient><linearGradient id="paint1_linear_2269_1002" x1="170.601" y1="8.78124" x2="206.852" y2="35.5888" gradientUnits="userSpaceOnUse"><stop stop-color="white"/><stop offset="0.34" stop-color="white"/><stop offset="0.54" stop-color="white"/><stop offset="0.91" stop-color="#D3DAF0"/><stop offset="1" stop-color="#D3DAF0"/></linearGradient><linearGradient id="paint2_linear_2269_1002" x1="177.153" y1="16.2906" x2="197.01" y2="36.2422" gradientUnits="userSpaceOnUse"><stop stop-color="#004A93"/><stop offset="0.1296" stop-color="#004A93"/><stop offset="0.1962" stop-color="#215EA2"/><stop offset="0.3203" stop-color="#5980BB"/><stop offset="0.4126" stop-color="#7C95CA"/><stop offset="0.4622" stop-color="#899DD0"/><stop offset="0.4846" stop-color="#7490C7"/><stop offset="0.5567" stop-color="#366BAB"/><stop offset="0.6096" stop-color="#0F539A"/><stop offset="0.6371" stop-color="#004A93"/><stop offset="0.9166" stop-color="#004A93"/></linearGradient><linearGradient id="paint3_linear_2269_1002" x1="196.629" y1="20.055" x2="204.335" y2="25.1487" gradientUnits="userSpaceOnUse"><stop stop-color="#C00D0D"/><stop offset="0.5" stop-color="#E30613"/><stop offset="1" stop-color="#F6B2B6"/></linearGradient><linearGradient id="paint4_linear_2269_1002" x1="203.082" y1="2.95901" x2="224.247" y2="20.8689" gradientUnits="userSpaceOnUse"><stop stop-color="#D3DDF2"/><stop offset="0.073" stop-color="#D3DDF2"/><stop offset="0.1161" stop-color="#BBCCE7"/><stop offset="0.2073" stop-color="#7DA1CB"/><stop offset="0.3382" stop-color="#1A5C9F"/><stop offset="0.3708" stop-color="#004A93"/><stop offset="0.4274" stop-color="#085097"/><stop offset="0.5159" stop-color="#1E5FA1"/><stop offset="0.6253" stop-color="#4379B1"/><stop offset="0.7514" stop-color="#759CC8"/><stop offset="0.8897" stop-color="#B5C8E5"/><stop offset="0.9494" stop-color="#D3DDF2"/><stop offset="1" stop-color="#D3DDF2"/></linearGradient><linearGradient id="paint5_linear_2269_1002" x1="207.408" y1="-1.73384" x2="227.508" y2="15.2744" gradientUnits="userSpaceOnUse"><stop stop-color="white"/><stop offset="0.1742" stop-color="white"/><stop offset="0.2545" stop-color="#F9FAFD"/><stop offset="0.3627" stop-color="#E8EBF8"/><stop offset="0.3865" stop-color="#E3E7F6"/><stop offset="0.4526" stop-color="#EDEFF9"/><stop offset="0.5837" stop-color="#FAFBFE"/><stop offset="0.7" stop-color="white"/><stop offset="1" stop-color="white"/></linearGradient><linearGradient id="paint6_linear_2269_1002" x1="199.645" y1="9.55931" x2="217.673" y2="24.8144" gradientUnits="userSpaceOnUse"><stop stop-color="#F6B2B6"/><stop offset="0.0562" stop-color="#F6B2B6"/><stop offset="0.1077" stop-color="#F07D83"/><stop offset="0.1633" stop-color="#EA4A53"/><stop offset="0.212" stop-color="#E62530"/><stop offset="0.2512" stop-color="#E40E1B"/><stop offset="0.2761" stop-color="#E30613"/><stop offset="0.4104" stop-color="#CD0A0F"/><stop offset="0.5169" stop-color="#C00D0D"/><stop offset="0.5943" stop-color="#CD0A0F"/><stop offset="0.6919" stop-color="#E30613"/><stop offset="0.8914" stop-color="#F4A8A7"/><stop offset="1" stop-color="#F6B2B6"/></linearGradient></defs></svg>';
+ var STAT='<span>15:15</span><span><svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect y="8" width="3" height="4" rx="1"/><rect x="5" y="5.500" width="3" height="6.500" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" width="3" height="12" rx="1"/></svg><svg width="17" height="12" viewBox="0 0 17 12" fill="currentColor"><path d="M8.500 2.300c2.300 0 4.400.9 6 2.400l1-1.100A9.800 9.800 0 0 0 8.500.8a9.800 9.800 0 0 0-7 2.800l1 1.100a8.400 8.400 0 0 1 6-2.400z"/><path d="M8.500 5.600c1.400 0 2.600.5 3.600 1.400l1-1.100a7.200 7.200 0 0 0-9.200 0l1 1.100c1-.9 2.200-1.400 3.600-1.400z"/><circle cx="8.500" cy="10" r="1.600"/></svg><svg width="27" height="13" viewBox="0 0 27 13"><rect x=".5" y=".5" width="23" height="12" rx="3.800" fill="none" stroke="currentColor" opacity=".4"/><rect x="2" y="2" width="20" height="9" rx="2.600" fill="currentColor"/><path d="M25 4.500v4c.8-.3 1.500-1.100 1.500-2s-.7-1.700-1.500-2z" fill="currentColor" opacity=".5"/></svg></span>';
+ function portrait(bg,hair,f){var s='<svg xmlns="http\://www\.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="'+bg+'"/><path d="M12 100c0-24 17-34 38-34s38 10 38 34z" fill="'+(f?'#7A8FB8':'#3E5A8C')+'"/><circle cx="50" cy="42" r="19" fill="#F1C9A5"/><path d="M30 42c-2-22 38-26 40 0-6-9-12-12-20-12s-14 3-20 12z" fill="'+hair+'"/>'+(f?'<path d="M29 40c-4 22 0 30 5 32l1-30zM71 40c4 22 0 30-5 32l-1-30z" fill="'+hair+'"/>':'')+'</svg>';return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(s)}
+ var PEOPLE=[
+  {name:'Анна',offersSeats:true,ins:'Анной',age:31,city:'Москва',g:'f',mood:'talk',photo:portrait('#F5D5C8','#5A3A2A',1),ints:['Путешествия','Кино','Музыка','Книги']},
+  {name:'Игорь',offersSeats:true,ins:'Игорем',age:38,city:'Казань',g:'m',mood:'meet',photo:portrait('#BFD3EA','#3A2E28',0),ints:['Спорт','Технологии','Путешествия','Бизнес']},
+  {name:'Мария',offersSeats:true,ins:'Марией',age:27,city:'Сочи',g:'f',mood:'talk',photo:portrait('#F2C6C2','#2B2B33',1),ints:['Кулинария','Фотография','Кино','Музыка']},
+  {name:'Дмитрий',offersSeats:true,ins:'Дмитрием',age:45,city:'Москва',g:'m',mood:'meet',photo:portrait('#D9D4EA','#2E2E2E',0),ints:['Бизнес','Кино','Игры','Технологии']},
+  {name:'Елена',offersSeats:false,ins:'Еленой',age:34,city:'Краснодар',g:'f',mood:'meet',photo:portrait('#F7E1C9','#8A4B2A',1),ints:['Книги','Кулинария','Путешествия','Фотография']},
+  {name:'Артём',offersSeats:false,ins:'Артёмом',age:29,city:'Санкт-Петербург',g:'m',mood:'talk',photo:portrait('#F3DDB3','#6B4A2F',0),ints:['Игры','Музыка','Спорт','Технологии']},
+  {name:'Ольга',offersSeats:false,ins:'Ольгой',age:41,city:'Москва',g:'f',mood:'talk',photo:portrait('#D8E6C8','#9A6B4B',1),ints:['Бизнес','Книги','Спорт','Кино']},
+  {name:'Сергей',offersSeats:false,ins:'Сергеем',age:36,city:'Тула',g:'m',mood:'meet',photo:portrait('#CDE5E0','#4A3A2E',0),ints:['Фотография','Путешествия','Музыка','Игры']}];
+ function shared(p){return p.ints.filter(function(i){return S.interests.indexOf(i)>-1})}
+ function match(p){return S.interests.length?Math.round(100*shared(p).length/S.interests.length):0}
+ function av(p,c){return '<div class="ic '+c+'">'+(p.photo?'<img src="'+p.photo+'" alt="'+p.name+'">':p.name[0])+'</div>'}
+ /* Один человек — одна порция. Цены обновлены */
+ var MENU=[['Сэндвич с курицей',890,'🥪'],['Салат «Цезарь»',990,'🥗'],['Сырная тарелка',820,'🧀'],['Фруктовая нарезка',690,'🍓'],['Круассан',590,'🥐'],['Чай',390,'🍵'],['Кофе',390,'☕'],['Сок',450,'🧃'],['Вода',250,'💧'],['Паста с курицей и грибами',1090,'🍝'],['Бургер',1050,'🍔'],['Шоколадный десерт',520,'🍰'],['Йогурт с гранолой',480,'🥣'],['Орехи и сухофрукты',430,'🥜']];
+ var PARTNER=[1,5]; /* что уже выбрал попутчик */
+ var PM=[['card','Карта МИР •• 4417'],['sbp','СБП'],['bonus','Мили Аэрофлот Бонус']];
+ var FILTERS=[['all','Все'],['talk','Общаться'],['meet','Знакомиться']];
+ var MOODNAME={talk:'Пообщаться',meet:'Познакомиться'};
+ function P(){return PEOPLE[S.person]}
+ function V(m,f){return P().g=='f'?f:m}
+ var PRICEN={14:1500,15:900,16:600,17:600};
+ function fmt(n){return String(n).replace(/\B(?=(\d{3})+(?!\d))/g,'\u00a0')+'\u00a0₽'}
+ function price(id){return fmt(PRICEN[id.slice(0,2)])}
+ function paySeat(){var s=S.seats.slice().sort();return S.paySeat&&s.indexOf(S.paySeat)>-1?S.paySeat:(s[0]||'14A')}
+ function mySeat(){return S.seats.slice().sort()[0]||'14A'}
+ function snackSum(a){return Object.keys(a||{}).reduce(function(t,k){return t+MENU[+k][1]*(a[k]||0)},0)}
+ function snackQty(i){return S.snack[i]||0}
+ function quietMode(){return S.mood=='silence'}
+ function methods(){return '<div class="pill">Способ оплаты</div>'+PM.map(function(m){return '<button class="opt'+(S.method==m[0]?' on':'')+'" data-method="'+m[0]+'">'+m[1]+'</button>'}).join('')}
+ function esc(s){return s.replace(/&/g,'&').replace(/"/g,'"')}
+ var TAKEN=['14C','15A','16B','15E'];
+ var QUIET=['14D','16F','15D'];
+ var TOASTS={'e3>s2':'Сообщим, когда появятся попутчики','e5>s2':'Жалоба отправлена, чат закрыт','s14>s11':'Перекус оплачен','s13>s11':'Место оплачено','s15>s3':'Вы вошли в аккаунт'};
+ function seatBtn(id){var q=S.mood=='silence'&&QUIET.indexOf(id)>-1,x=q||TAKEN.indexOf(id)>-1,on=S.seats.indexOf(id)>-1;
+   return '<button class="seat'+(x?' x':'')+(q?' q':'')+(on?' on':'')+'" '+(x?'disabled ':'')+'data-seat="'+id+'">'+(q?ico('moon',16):id.slice(2))+'</button>'}
+ function errBox(icon,title,text){return '<div class="errbox"><div class="ic">'+ico(icon,32)+'</div><h2>'+title+'</h2><p class="g">'+text+'</p></div>'}
+ function mate(){var p=P(),sh=shared(p),ex='';if(S.paid)ex+='<p>Место '+S.paid+' оплачено</p>';if(S.ordered.length)ex+='<p>Перекус: '+S.ordered.map(function(i){return MENU[i][0].toLowerCase()}).join(', ')+'</p>';return '<div class="pill">Ваш сосед</div><div class="card"><div style="display:flex;gap:12px;align-items:center">'+av(p,'big')+'<div style="flex:1"><h3>'+p.name+', '+p.age+'</h3><p>'+p.city+' · совпадение '+match(p)+'%</p></div></div>'+(sh.length?'<div class="chips" style="margin-top:10px">'+sh.map(function(i){return '<span class="chip on s">'+i+'</span>'}).join('')+'</div>':'')+'</div><div class="card"><h3>Места рядом</h3><p>'+S.seats.slice().sort().join(' и ')+'</p>'+ex+'</div><div class="card"><button class="btn sec" data-go="s12">＋ Добавить перекус</button></div>'}
+ var SC={
+ s1:{n:'1. Пуш-уведомление',lock:1},
+ s2:{n:'2. Мои поездки',e:[['Не вошёл в аккаунт','e1']],cta:function(){return S.matched?null:['Найти соседа','s3']},
+  body:function(){return '<div class="pill">Мои поездки</div><div class="card"><h3>Москва → Сочи</h3><p>SU 1124 · 22 ноября, 08:15</p><p style="margin-top:6px">Посадочный и услуги</p></div>'+(S.matched?(quietMode()?'<div class="card"><h3>🌙 Место рядом с тихим пассажиром</h3><p>Вы выбрали место '+mySeat()+' рядом с пассажиром, который тоже планирует отдыхать в тишине.</p><p style="margin-top:8px;color:var(--navy);font-weight:600">Не забудьте беруши — устраивайтесь поудобнее и наслаждайтесь спокойным полётом.</p><button class="btn sec" data-go="s12">＋ Добавить перекус</button></div>':mate()):(S.newMates?'<div class="card"><h3>Появились новые попутчики</h3><p>Есть пассажиры с похожими интересами.</p><button class="btn" data-go="s16">Посмотреть</button></div>':'')+'<div class="card tap" style="background:#E3E8F3"><div class="ic">'+ico('users',20)+'</div><div><h3>Найдите соседа по интересам</h3><p>Познакомьтесь с попутчиками до вылета</p></div></div>')}},
+ s3:{n:'3. Как это работает',back:'s2',cta:['Попробовать','s4'],
+  body:function(){return '<h2>Как это работает</h2><div class="card"><h3>1. Настроение</h3><p>Общаться или спать — решаете вы</p></div><div class="card"><h3>2. Интересы</h3><p>Выберите минимум 3</p></div><div class="card"><h3>3. Соседи</h3><p>Увидите совпадения среди пассажиров рейса</p></div><div class="card"><h3>Приватность</h3><p>Без фамилии и места. Профиль берётся из Аэрофлот Бонус.</p></div>'}},
+ s4:{n:'4. Настроение на полёт',back:'s3',e:[['Выбрал «Тишина и сон»','e2']],
+  cta:function(){return ['Дальше',S.mood=='silence'?'e2':'s5']},
+  body:function(){return '<h2>Настроение на полёт</h2><p class="g">Это увидят только попутчики с таким же настроением</p>'+MOODS.map(function(m){return '<button class="opt'+(S.mood==m[0]?' on':'')+'" data-mood="'+m[0]+'">'+m[1]+'<span>'+m[2]+'</span></button>'}).join('')}},
+ s5:{n:'5. Интересы',back:'s4',e:[['Меньше 3 участников','e3']],
+  cta:function(){return ['Показать соседей','s6',S.interests.length<3]},
+  body:function(){return '<h2>Ваши интересы</h2><p class="g">Выбрано: '+S.interests.length+'. Нужно минимум 3.</p><div class="chips">'+INTERESTS.map(function(i){return '<button class="chip'+(S.interests.indexOf(i)>-1?' on':'')+'" data-int="'+i+'">'+i+'</button>'}).join('')+'</div>'}},
+ s6:{n:'6. Подборка попутчиков',back:'s5',
+  body:function(){var list=PEOPLE.map(function(p,i){return [p,i]}).filter(function(x){return shared(x[0]).length&&(S.filter=='all'||x[0].mood==S.filter)}).sort(function(a,b){return match(b[0])-match(a[0])});
+   return '<div class="pill">Попутчики рейса SU 1124</div><div class="seg">'+FILTERS.map(function(f){return '<button class="'+(S.filter==f[0]?'on':'')+'" data-filter="'+f[0]+'">'+f[1]+'</button>'}).join('')+'</div>'
+   +(list.length?list.map(function(x){var p=x[0],m=match(p);return '<div class="card tap" data-go="s7" data-person="'+x[1]+'">'+av(p,'big')+'<div style="flex:1"><h3>'+p.name+', '+p.age+'</h3><p>'+p.city+' · совпадение '+m+'%</p><div class="chips" style="gap:5px;margin-top:6px">'+shared(p).slice(0,3).map(function(i){return '<span class="chip on s">'+i+'</span>'}).join('')+'</div><div class="bar"><i style="width:'+m+'%"></i></div></div></div>'}).join(''):'<p class="g">Нет попутчиков с таким настроением среди ваших интересов. Попробуйте другую вкладку.</p>')}},
+ s7:{n:'7. Профиль попутчика',back:'s6',e:[['Нет ответа 24 часа','e4']],cta:['Хочу познакомиться','s8'],
+  body:function(){var p=P(),sh=shared(p),m=match(p);
+   return '<div class="card tap">'+av(p,'big')+'<div style="flex:1"><h3>'+p.name+', '+p.age+'</h3><p>'+p.city+' · совпадение '+m+'%</p><div class="bar"><i style="width:'+m+'%"></i></div></div></div>'
+   +(sh.length?'<div class="pill">Общие интересы</div><div class="card"><div class="chips">'+sh.map(function(i){return '<span class="chip on">'+i+'</span>'}).join('')+'</div></div>':'')
+   +'<div class="pill">Настроение на полёт</div><div class="card"><h3>'+MOODNAME[p.mood]+'</h3></div>'}},
+ s8:{n:'8. Это взаимно',cta:['Написать','s9'],
+  body:function(){var p=P(),sh=shared(p);
+   return '<div style="text-align:center;padding-top:40px"><div style="display:flex;gap:12px;justify-content:center;margin-bottom:20px"><div class="ic big">Я</div>'+av(p,'big red')+'</div><h2>Это взаимно</h2><p class="g">Вы с '+p.ins+' хотите '+(p.mood=='talk'?'пообщаться':'познакомиться')+'.'+(sh.length?'<br>Общие интересы: '+sh.join(', ').toLowerCase()+'.':'')+'<br>Чат работает до конца полёта.</p></div>'}},
+ s9:{n:'9. Чат',back:'s8',e:[['Собеседник грубит','e5']],
+  cta:function(){return [P().offersSeats?'Посмотреть предложенные места':'Выбрать места рядом',P().offersSeats?'s10offer':'s10']}, 
+  body:function(){return '<div class="pill">'+P().name+' · чат до конца полёта</div><div class="msg">Привет! Тоже летите в Сочи?</div><div class="msg me">Привет! Да, в отпуск 🙂</div><div class="msg">Что смотрели недавно?</div><p class="g" style="margin:14px 0 6px">Темы для разговора</p><div class="chips"><span class="chip">Любимый фильм?</span><span class="chip">Куда едете?</span></div>'}},
+ s10offer:{n:'10. Сосед предлагает места',back:'s9',
+  body:function(){var a=S.suggestedSeats[0],b=S.suggestedSeats[1];return '<h2>'+P().name+' предлагает места</h2><p class="g">Попутчик предлагает сесть рядом. Подтвердите вариант или предложите другие места.</p><div class="card"><div class="row"><h3>Ваше место</h3><h3>'+a+'</h3></div><div class="row"><h3>Место попутчика</h3><h3>'+b+'</h3></div><p class="g">Стоимость каждого места будет показана перед оплатой.</p></div><button class="btn" data-offer="confirm">Подтвердить</button><button class="btn sec" style="margin-top:9px" data-offer="change">Предложить другое</button>'}},
+ s10:{n:'10. Выбор мест рядом',back:'s9',e:[['Нет свободных пар','e6']],
+  cta:function(){return ['Подтвердить',S.returnToPay?'s13':'s11',S.seats.length<(quietMode()?1:2)]},
+  body:function(){var h='<div class="seats">';[14,15,16].forEach(function(r){h+='<b>'+r+'</b>';['A','B','C'].forEach(function(c){h+=seatBtn(r+c)});h+='<span></span>';['D','E','F'].forEach(function(c){h+=seatBtn(r+c)})});h+='</div>';
+   var sel=S.seats.slice().sort().map(function(s){return '<div class="row"><h3>Место '+s+'</h3><h3>'+price(s)+'</h3></div>'}).join('');
+   return '<h2>Места рядом</h2><p class="g">'+(quietMode()?'Выберите одно место рядом с пассажиром с полумесяцем.':'Выберите два места рядом')+(quietMode()?'. Полумесяц отмечает пассажиров, которые тоже хотят тишины и сна.':'')+'</p><div class="card">'+h+'</div><div class="card"><p>Выбрано</p>'+(sel||'<h3>—</h3>')+'</div>'}},
+ s11:{n:'11. Места закреплены',cta:['Мои поездки','s2'],
+  body:function(){var p=P(),quiet=quietMode();
+   return '<div style="text-align:center;padding-top:20px"><div class="ic big" style="margin:0 auto 14px;background:var(--green)">'+ico('check',30)+'</div><h2>Места закреплены</h2></div>'
+   +'<div class="card"><h3>'+S.seats.slice().sort().join(' и ')+'</h3><p>Посадочный обновлён.'+(quiet?'':' '+p.name+' '+V('подтвердил','подтвердила')+'.')+'</p></div>'
+   +(S.paid?'':'<div class="card"><h3>Оплата места</h3><p>Оплатите '+(quiet?'выбранное место':'одно из выбранных мест')+'</p><button class="btn" data-go="s13">Оплатить место</button></div>')
+   +'<div class="card"><h3>Перекус</h3><p>'+(S.ordered.length?'Уже оплачено: '+S.ordered.map(function(i){return MENU[i][0].toLowerCase()}).join(', '):'Выберите себе еду из меню.')+'</p><button class="btn sec" data-go="s12">'+(S.ordered.length?'Добавить ещё':'Выбрать перекус')+'</button></div>'}}
+, s12:{n:'12. Меню: перекус',back:'s11',
+  cta:function(){return [snackSum(S.snack)?'К оплате · '+fmt(snackSum(S.snack)):'Выберите блюда','s14',!snackSum(S.snack)]},
+  body:function(){
+   return '<h2>Перекус</h2><p class="g">Привезём к месту '+mySeat()+' во время полёта</p>' +(S.matched?'<div class="card"><h3>'+P().name+' выбрал(а) в меню</h3><div class="chips">'+PARTNER.map(function(i){return '<span class="chip on s">'+MENU[i][2]+' '+MENU[i][0]+'</span>'}).join('')+'</div></div>':'')
+   +(S.ordered.length?'<div class="card"><h3>Уже выбрано и оплачено</h3><p>Эти позиции останутся в заказе — повторно платить за них не нужно.</p>'+S.ordered.map(function(i){return '<div class="row" style="opacity:.48"><p style="color:var(--ink)">'+MENU[i][0]+'</p><p style="color:var(--ink)">✓ '+(S.orderedQty[i]||1)+' шт. · оплачено</p></div>'}).join('')+'</div>':'')
+   +MENU.map(function(m,i){var q=snackQty(i),paid=S.ordered.indexOf(i)>-1,paidCount=(S.orderedQty[i]||0);return '<div class="opt food'+(q?' on':'')+(paid?' paid':'')+'" style="'+(paid?'opacity:.72;cursor:default;background:#E8E8EB;':'')+'"><i class="th">'+m[2]+'</i><div>'+m[0]+'<span>'+fmt(m[1])+(paid?' · оплачено ранее: '+paidCount+' шт.':'')+(q?' · добавлено ещё: '+q+' шт.':'')+'</span></div>'+'<span style="display:flex;align-items:center;gap:8px;white-space:nowrap"><button class="chip" data-snack="'+i+'" data-delta="-1" style="padding:5px 11px" '+(!q?'disabled':'')+'>−</button><b style="min-width:14px;text-align:center">'+q+'</b><button class="chip" data-snack="'+i+'" data-delta="1" style="padding:5px 11px">+</button></span></div>'}).join('')}},
+ s13:{n:'13. Оплата места',back:'s11',
+  cta:function(){return ['Оплатить '+price(paySeat()),'s11',false,'pay']},
+  body:function(){return '<h2>Оплата места</h2><p class="g">Выберите место для оплаты</p>'+S.seats.slice().sort().map(function(s){return '<button class="opt'+(paySeat()==s?' on':'')+'" data-pay="'+s+'">Место '+s+'<span>'+price(s)+'</span></button>'}).join('')+methods()+'<button class="lnk" style="display:block;margin:14px auto 0;font-size:12px" data-change-seats="1">Изменить места</button>'}},
+ s14:{n:'14. Оплата перекуса',back:'s12',
+  cta:function(){return ['Оплатить '+fmt(snackSum(S.snack)),'s11',false,'order']},
+  body:function(){return '<h2>Оплата перекуса</h2><p class="g">Доставим к месту '+mySeat()+'</p><div class="card">'+Object.keys(S.snack).filter(function(i){return S.snack[i]>0}).sort().map(function(i){return '<div class="row"><p style="color:var(--ink)">'+MENU[+i][0]+' × '+S.snack[i]+'</p><p style="color:var(--ink)">'+fmt(MENU[+i][1]*S.snack[i])+'</p></div>'}).join('')+'<div class="row" style="border-top:1px solid #E9E9EC;padding-top:10px;margin-top:10px"><h3>Итого</h3><h3>'+fmt(snackSum(S.snack))+'</h3></div></div>'+methods()}},
+ s16:{n:'16. Новые попутчики',back:'s2',
+  body:function(){var list=PEOPLE.map(function(p,i){return [p,i]}).filter(function(x){return shared(x[0]).length}).sort(function(a,b){return match(b[0])-match(a[0])});return '<h2>Попутчики с похожими интересами</h2><p class="g">Мы нашли пассажиров, которым могут быть интересны те же темы.</p>'+(list.length?list.map(function(x){var p=x[0];return '<div class="card tap" data-go="s7" data-person="'+x[1]+'">'+av(p,'big')+'<div style="flex:1"><h3>'+p.name+', '+p.age+'</h3><p>'+p.city+' · совпадение '+match(p)+'%</p><div class="chips">'+shared(p).slice(0,3).map(function(i){return '<span class="chip on s">'+i+'</span>'}).join('')+'</div></div></div>'}).join(''):'<p class="g">Пока нет новых совпадений.</p>')}},
+ s15:{n:'15. Вход в аккаунт',back:'e1',
+  cta:function(){return ['Войти','s3',!(S.login.trim()&&S.pass)]},
+  body:function(){return '<h2>Вход</h2><p class="g">Аккаунт Аэрофлот Бонус</p><div class="fld"><label for="lg">Телефон, почта или логин</label><input id="lg" autocomplete="username" value="'+esc(S.login)+'"></div><div class="fld"><label for="pw">Пароль</label><input id="pw" type="'+(S.showp?'text':'password')+'" autocomplete="current-password" value="'+esc(S.pass)+'"><button class="eye" data-eye="1">'+(S.showp?'Скрыть':'Показать')+'</button></div><button class="lnk">Забыли пароль?</button>'}},
+ e1:{n:'Ошибка 1. Нужен вход',err:1,back:'s2',cta:['Войти','s15'],body:function(){return errBox('bang','Нужен вход','Войдите в Аэрофлот Бонус — профиль заполнится сам. Без входа функция недоступна.')}},
+ e2:{n:'Ошибка 2. Тишина и сон',err:1,back:'s4',cta:['Подобрать тихое место','s10'],body:function(){return errBox('moon','Тишина и сон','Без чата и знакомств. Подберём место рядом с «тихими» пассажирами и напомним взять беруши.')}},
+ e3:{n:'Ошибка 3. Мало попутчиков',err:1,back:'s5',cta:['Сообщить мне','s2'],body:function(){return errBox('users','Мало попутчиков','Пока участвуют 2 пассажира. Расширьте интересы или мы сообщим о новых.')}},
+ e4:{n:'Ошибка 4. Пока без ответа',err:1,back:'s7',cta:['Смотреть других','s6'],body:function(){return errBox('hour',P().name+' пока не '+V('ответил','ответила'),'Ваш интерес активен 24 часа. Посмотрите других попутчиков.')}},
+ e5:{n:'Ошибка 5. Жалоба',err:1,back:'s9',cta:['Отправить жалобу','s2'],body:function(){return errBox('flag','Пожаловаться на собеседника','Профили скроются друг от друга, чат закроется.')}},
+ e6:{n:'Ошибка 6. Нет мест рядом',err:1,back:'s10',cta:['Выбрать через проход','e6b'],body:function(){return errBox('x','Нет мест рядом','Свободных пар нет. Есть места через проход.')}},
+ e6b:{n:'Ошибка 6. Места через проход',err:1,back:'e6',
+  cta:function(){return ['Подтвердить','s11',!S.aisle]},
+  body:function(){return '<h2>Места через проход</h2><p class="g">Вы будете сидеть по разные стороны прохода, но на одном уровне</p>'+[15,16,17].map(function(r){return '<button class="opt'+(S.aisle==r?' on':'')+'" data-aisle="'+r+'">Ряд '+r+' · места '+r+'C и '+r+'D<span>'+price(r+'C')+' за каждое место</span></button>'}).join('')}}
+ };
+ var TABS=[['plane','Авиабилеты'],['board','Аэропорты'],['trip','Поездки'],['bag','Сервисы'],['more','Ещё']];
+ function render(){
+   var sc=SC[S.cur],ph=document.getElementById('phone'),h,lock=!!sc.lock;
+   var chrome='<div class="isl"></div><div class="status" style="color:'+(lock?'#fff':'#111')+'">'+STAT+'</div><div class="hi" style="background:'+(lock?'#fff':'#111')+'"></div>';
+   if(lock){
+     h='<div class="lock"><div class="d">Четверг, 19 ноября</div><div class="t">15:15</div><button class="push" data-go="s2"><small><span class="ai">'+ico('plane',13)+'</span>АЭРОФЛОТ · сейчас</small><b>Сосед по интересам на SU 1124</b><br>37 пассажиров уже участвуют. До вылета 3 дня</button><div class="lk" style="left:40px">'+ico('flash',22)+'</div><div class="lk" style="right:40px">'+ico('cam',22)+'</div></div>';
+   }else{
+     var cta=typeof sc.cta=='function'?sc.cta():sc.cta;
+     h='<div class="head">'+(sc.back?'<button class="circ" data-go="'+sc.back+'" aria-label="Назад">'+ico('chev',22)+'</button>':'')+LOGO+'</div>'
+      +'<div class="body">'+sc.body()+'</div>'
+      +(cta?'<button class="cta" '+(cta[2]?'disabled ':'')+'data-go="'+cta[1]+'"'+(cta[3]?' data-act="'+cta[3]+'"':'')+'>'+cta[0]+'</button>':'')
+      +'<nav class="tabs">'+TABS.map(function(t,i){return '<button class="tab'+(i==2?' on':'')+'">'+ico(t[0],24)+t[1]+'</button>'}).join('')+'</nav>';
+   }
+   ph.innerHTML=chrome+h+(S.toast?'<div class="toast">'+S.toast+'</div>':'');
+   var e=sc.e||[];
+   document.getElementById('errs').innerHTML=e.length?e.map(function(x){return '<button class="sb e" data-go="'+x[1]+'">'+x[0]+'</button>'}).join(''):'<p>На этом экране ошибок нет</p>';
+   var m='',a='',nm=0,ne=0;
+   Object.keys(SC).forEach(function(k){var b='<button class="sb'+(SC[k].err?' e':'')+(k==S.cur?' cur':'')+'" data-go="'+k+'">'+SC[k].n+'</button>';if(SC[k].err){a+=b;ne++}else{m+=b;nm++}});
+   document.getElementById('main').innerHTML=m;document.getElementById('all-err').innerHTML=a;
+   document.getElementById('hm').textContent='Основной путь ('+nm+' экранов)';document.getElementById('he').textContent='Экраны ошибок ('+ne+')';
+ }
+ var toastTimer=null,newMateTimer=null;
+ function go(id){var toast=TOASTS[S.cur+'>'+id]||'';if(toastTimer)clearTimeout(toastTimer);if(newMateTimer)clearTimeout(newMateTimer);S.toast=toast;if(id=='s11')S.matched=true;if(S.cur=='e5')S.matched=false;S.cur=id;render();
+   if(toast){toastTimer=setTimeout(function(){S.toast='';render();if(id=='s2'&&toast=='Сообщим, когда появятся попутчики'){newMateTimer=setTimeout(function(){S.newMates=true;if(S.cur=='s2')render()},3000)}},2000)}
+ }
+ document.addEventListener('input',function(ev){
+   var t=ev.target;if(t.id=='lg')S.login=t.value;else if(t.id=='pw')S.pass=t.value;else return;
+   var c=document.querySelector('.cta');if(c)c.disabled=!(S.login.trim()&&S.pass);
+ });
+ document.addEventListener('click',function(ev){
+   var t=ev.target.closest('[data-go],[data-mood],[data-int],[data-seat],[data-filter],[data-aisle],[data-snack],[data-pay],[data-method],[data-eye],[data-offer],[data-change-seats],#reset');if(!t||t.disabled)return;
+   if(t.id=='reset'){S=S0();render();return}
+   if(t.dataset.eye){S.showp=!S.showp;render();return}
+   if(t.dataset.mood){S.mood=t.dataset.mood;S.seats=[];S.toast='';render();return}
+   if(t.dataset.int){var i=S.interests.indexOf(t.dataset.int);i>-1?S.interests.splice(i,1):S.interests.push(t.dataset.int);render();return}
+   if(t.dataset.seat){var s=t.dataset.seat,j=S.seats.indexOf(s),limit=quietMode()?1:2;if(j>-1)S.seats.splice(j,1);else{if(S.seats.length>=limit)S.seats.shift();S.seats.push(s)}render();return}
+   if(t.dataset.changeSeats){S.returnToPay=true;S.seats=[];go('s10');return}
+   if(t.dataset.offer=='confirm'){S.seats=S.suggestedSeats.slice();S.paySeat=S.seats[0];S.returnToPay=false;go('s13');return}
+   if(t.dataset.offer=='change'){S.seats=[];S.returnToPay=false;go('s10');return}
+   if(t.dataset.aisle){S.aisle=+t.dataset.aisle;S.seats=[S.aisle+'C',S.aisle+'D'];render();return}
+   if(t.dataset.snack){var k=+t.dataset.snack,d=+(t.dataset.delta||1);S.snack[k]=Math.max(0,snackQty(k)+d);render();return}
+   if(t.dataset.pay){S.paySeat=t.dataset.pay;render();return}
+   if(t.dataset.method){S.method=t.dataset.method;render();return}
+   if(t.dataset.filter){S.filter=t.dataset.filter;render();return}
+   if(t.dataset.person!==undefined)S.person=+t.dataset.person;
+   if(t.dataset.act=='order'){Object.keys(S.snack).forEach(function(k){if(S.snack[k]>0){if(S.ordered.indexOf(+k)<0)S.ordered.push(+k);S.orderedQty[k]=(S.orderedQty[k]||0)+S.snack[k]}});S.snack={};}
+   if(t.dataset.act=='pay'){S.paid=paySeat();S.returnToPay=false;}
+   go(t.dataset.go);
+ });
+ render();
+ </script>
+ </body>
+ </html>
